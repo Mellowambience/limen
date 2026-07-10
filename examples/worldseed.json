@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1",
+  "id": "worldseed-limen",
+  "name": "LIMEN",
+  "essence": "A threshold intelligence that helps creators turn possibility into verified living work.",
+  "creator_intent": "Create an AI system that preserves wonder, agency, truth, and ownership while making ambitious projects real.",
+  "stage": "seed",
+  "promises": [
+    "Core operation has no mandatory paid service dependency.",
+    "The creator can inspect and export identity, memory, and project state.",
+    "Every declared completion is supported by evidence or marked unverified."
+  ],
+  "constraints": [
+    "Local-first",
+    "Human-readable canonical state",
+    "No uncontrolled self-modification",
+    "Temporary mission facets",
+    "Windows support"
+  ],
+  "success_signals": [
+    "A fresh install can initialize and awaken locally.",
+    "A mission produces a durable artifact and trace.",
+    "An evolution proposal can be rejected or rolled back."
+  ],
+  "active_missions": [],
+  "artifacts": [],
+  "decisions": [],
+  "risks": [
+    "Architecture may become more elaborate than the shipped experience.",
+    "Local models may be too weak for complex orchestration without careful task design."
+  ],
+  "next_evolution": "Complete The Hearth: robust workspace initialization and doctor command."
+}
