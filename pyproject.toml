@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [{name = "Amara Torretti"}]
-dependencies = []
+dependencies = ["rich>=13.0"]
 
 [project.scripts]
 limen = "limen.cli:main"

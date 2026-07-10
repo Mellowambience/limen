@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from .prosperity import Opportunity, ProsperityEngine
 from .provider import OllamaProvider
 from .runtime import LimenRuntime
 from .steward import LifeSteward, LifeTask, VALID_DOMAINS
+from .display import render, render_plain_message, status_line, banner
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,7 +31,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path.cwd(),
         help="Project root containing LIMEN identity files.",
     )
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command", required=False)
 
     subparsers.add_parser("init", help="Initialize the local .limen workspace.")
     subparsers.add_parser("awaken", help="Load the Soul Kernel and current Worldseed.")
@@ -302,29 +304,71 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _print_json(data: object) -> None:
-    print(json.dumps(data, indent=2, ensure_ascii=False))
+    render(_CTX_TITLE, data)
+
+
+_CTX_TITLE = "LIMEN"
+
+
+def _derive_title(args: argparse.Namespace) -> str:
+    title = args.command or "limen"
+    for attr in (
+        "capsule_command",
+        "steward_command",
+        "income_command",
+        "self_command",
+        "moral_command",
+        "ghostline_command",
+        "study_command",
+        "matrix_command",
+        "sanctuary_command",
+        "space_command",
+        "subspace_command",
+        "jspace_command",
+    ):
+        sub = getattr(args, attr, None)
+        if sub:
+            title = f"{title} · {sub}"
+            break
+    return title
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    if args.command is None:
+        banner()
+        return
+
+    global _CTX_TITLE
+    _CTX_TITLE = _derive_title(args)
+
+    env_root = os.environ.get("LIMEN_ROOT")
+    if env_root:
+        args.root = Path(env_root).expanduser().resolve()
+
     runtime = LimenRuntime.create(args.root)
 
     try:
         if args.command == "init":
             created = runtime.initialize()
             if created:
-                print("LIMEN workspace initialized:")
-                for path in created:
-                    print(f"  + {path}")
+                render_plain_message(
+                    "\n".join(f"  + {path}" for path in created),
+                    title="LIMEN · init",
+                )
+                status_line(True, "workspace ready")
             else:
-                print("LIMEN workspace already initialized.")
+                render_plain_message(
+                    "Workspace already initialized.", title="LIMEN · init"
+                )
             return
 
         if args.command == "awaken":
             if not runtime.workspace.exists():
                 runtime.initialize()
-            print(runtime.awaken())
+            render_plain_message(runtime.awaken(), title="LIMEN · awaken")
             return
 
         if args.command == "capsule":
